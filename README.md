@@ -3,9 +3,9 @@
 使用root运行以下命令：
 
 ```
-wget https://raw.githubusercontent.com/TScci/iptables_whitelist/master/whitelist.zone
+wget https://raw.githubusercontent.com/TScci/iptables_whitelist/main/whitelist.zone
 vi ./whitelist.zone 
-wget https://raw.githubusercontent.com/TScci/iptables_whitelist/master/accept-ips.sh
+wget https://raw.githubusercontent.com/TScci/iptables_whitelist/main/accept-ips.sh
 chmod +x accept-ips.sh
 ./accept-ips.sh
 ```
