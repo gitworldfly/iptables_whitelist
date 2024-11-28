@@ -14,51 +14,6 @@ root_need(){
     fi
 }
 
-#1-添加放通ip
-accept_ipset(){
-#添加ipset规则
-echo -e "${Green}请输入需要放通的国家代码，如cn(中国)，注意字母为小写！${Font}"
-read -p "请输入国家代码:" GEOIP
-echo -e "${Green}正在下载IPs data...${Font}"
-wget -P /tmp http://www.ipdeny.com/ipblocks/data/countries/$GEOIP.zone 2> /dev/null
-#检查下载是否成功
-    if [ -f "/tmp/"$GEOIP".zone" ]; then
-     echo -e "${Green}IPs data下载成功！${Font}"
-    else
-     echo -e "${Green}下载失败，请检查你的输入！${Font}"
-     echo -e "${Green}代码查看地址：http://www.ipdeny.com/ipblocks/data/countries/${Font}"
-    exit 1
-    fi
-#创建规则
-ipset -N $GEOIP hash:net
-for i in $(cat /tmp/$GEOIP.zone ./whitelist.zone); do ipset -A $GEOIP $i; done
-rm -f /tmp/$GEOIP.zone
-echo -e "${Green}规则添加成功，即将开始放通ip！${Font}"
-#封禁全部端口
-iptables -P INPUT DROP
-#开始放通
-iptables -I INPUT -p tcp -m set --match-set "$GEOIP" src -j ACCEPT
-iptables -I INPUT -p udp -m set --match-set "$GEOIP" src -j ACCEPT
-echo -e "${Green}全端口封禁，指定白名单和国家($GEOIP)的ip放通成功！${Font}"
-}
-
-#2-关闭放通规则
-unblock_ipset(){
-iptables -P INPUT ACCEPT
-echo -e "${Green}请输入需要解除的国家代码，如cn(中国)，注意字母为小写！${Font}"
-read -p "请输入国家代码:" GEOIP
-#判断是否有此国家的规则
-lookuplist=`ipset list | grep "Name:" | grep "$GEOIP"`
-    if [ -n "$lookuplist" ]; then
-        iptables -D INPUT -p tcp -m set --match-set "$GEOIP" src -j ACCEPT
-    iptables -D INPUT -p udp -m set --match-set "$GEOIP" src -j ACCEPT
-    ipset destroy $GEOIP
-    echo -e "${Green}所指定国家($GEOIP)的ip白名单解除成功，并删除其对应的规则！${Font}"
-    else
-    echo -e "${Green}解除失败，请确认你所输入的国家是否在白名单列表内！${Font}"
-    exit 1
-    fi
-}
 
 #3-查看白名单列表
 accept_list(){
