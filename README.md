@@ -4,7 +4,7 @@
 
 ```
 wget https://raw.githubusercontent.com/gitworldfly/iptables_whitelist/main/whitelist.zone
-vi ./whitelist.zone 
+# 如果需要编辑运行如下命令vi ./whitelist.zone 
 wget https://raw.githubusercontent.com/gitworldfly/iptables_whitelist/main/accept-ips.sh
 chmod +x accept-ips.sh
 ./accept-ips.sh
